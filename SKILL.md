@@ -93,8 +93,8 @@ Render as a code block so the pixel art and box align correctly.
 ```
 ⬛🟧🟧🟧🟧⬛
 ⬜⬜⬜⬜⬜⬜
-🟧⬛🟧🟧⬛🟧   Claude's on it!
-🟧🟧🟧🟧🟧🟧   Go do this while I work:
+🟧⬛🟧🟧⬛🟧   stretch o'clock!! 💃
+🟧🟧🟧🟧🟧🟧   your move while I work:
 ⬛🟧⬛⬛🟧⬛
 ┌─────────────────────────────────────────┐
 │  🏃 [EXERCISE NAME]  (~N min task)      │
@@ -103,7 +103,7 @@ Render as a code block so the pixel art and box align correctly.
 │                                         │
 │  ✦ Why it helps: [benefit, 1 sentence]  │
 └─────────────────────────────────────────┘
-  Come back when you're done — I'll be here!
+  back soon — go move!! 🤸
 ```
 
 ---
