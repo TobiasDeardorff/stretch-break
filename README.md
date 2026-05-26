@@ -1,6 +1,23 @@
-# stretch-break
+# Stretch Break
 
 A Claude Code skill that suggests movement breaks before long-running tasks — keeping you active while Claude works.
+
+```
+⬛🟧🟧🟧🟧⬛
+⬜⬜⬜⬜⬜⬜
+🟧⬛🟧🟧⬛🟧   Claude's on it!
+🟧🟧🟧🟧🟧🟧   Go do this while I work:
+⬛🟧⬛⬛🟧⬛
+┌─────────────────────────────────────────┐
+│  🏃 [EXERCISE NAME]  (~N min task)      │
+│─────────────────────────────────────────│
+│  [Step-by-step instructions, 1-2 lines] │
+│                                         │
+│  ✦ Why it helps: [benefit, 1 sentence]  │
+└─────────────────────────────────────────┘
+  Come back when you're done — I'll be here!
+```
+
 
 ## What it does
 
