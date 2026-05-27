@@ -21,6 +21,10 @@ A Claude Code skill that suggests movement breaks before long-running tasks — 
 ```
 
 
+#### Like this skill?
+As thanks, consider donating to [Our Village Gardens](https://givebutter.com/our-village-gardens-dxyqwa), a cause that I care deeply about and is located just a few blocks from my home. 
+
+
 ## What it does
 
 - Shows a break card (stretch, breathing exercise, water walk, or micro-walk) **before any task estimated to take 3+ minutes**
