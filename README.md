@@ -2,23 +2,12 @@
 
 A Claude Code skill that suggests movement breaks before long-running tasks — keeping you active while Claude works.
 
-```
-⬛🟧🟧🟧🟧⬛
-⬜⬜⬜⬜⬜⬜
-🟧⬛🟧🟧⬛🟧   stretch o'clock!! 💃
-🟧🟧🟧🟧🟧🟧   your move while I work:
-⬛🟧⬛⬛🟧⬛
-┌─────────────────────────────────────────┐
-│  🏃 Box Breathing  (~8 min task)        │
-│─────────────────────────────────────────│
-│  Inhale 4 sec → hold 4 sec → exhale     │
-│  4 sec → hold 4 sec. Repeat 4 rounds.   │
-│                                         │
-│  ✦ Why it helps: Activates the          │
-│    parasympathetic nervous system.      │
-└─────────────────────────────────────────┘
-  back soon — go move!! 🤸
-```
+
+<img width="752" height="542" alt="CleanShot 2026-05-27 at 18 18 16@2x" src="https://github.com/user-attachments/assets/543af949-d08d-4ebb-a161-99bd5f3f83cc" />
+
+
+#### Like this skill?
+As thanks, consider donating to [Our Village Gardens](https://givebutter.com/our-village-gardens-dxyqwa), a cause that I care deeply about and is located just a few blocks from my home. 
 
 
 ## What it does
