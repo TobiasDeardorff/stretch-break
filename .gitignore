@@ -1,1 +1,4 @@
+# Runtime state — created on the user's machine, never committed.
+# Committing .setup-done makes setup.sh exit early on a fresh clone.
 .setup-done
+.last-reminded
