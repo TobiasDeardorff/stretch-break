@@ -1,42 +1,129 @@
-# Stretch Break
+# stretch-break
 
-A Claude Code skill that suggests movement breaks before long-running tasks — keeping you active while Claude works.
+A [Claude Code](https://docs.claude.com/en/docs/claude-code/overview) skill that
+nudges you to get up and move during long working sessions. When a break is due,
+it fires a desktop notification *and* has Claude show a small "break card" in chat
+before it starts working — so you can step away while it does the task.
 
+## How it works
 
-<img width="752" height="542" alt="CleanShot 2026-05-27 at 18 18 16@2x" src="https://github.com/user-attachments/assets/543af949-d08d-4ebb-a161-99bd5f3f83cc" />
+The decision of **when** to break and **which** exercise to show is made entirely
+by a `UserPromptSubmit` hook (`scripts/remind.sh`) that runs on every prompt.
+Claude's only job is to render the card when the hook tells it to.
 
+The hook fires a break only when **two gates** both pass:
 
-#### Like this skill?
-As thanks, consider donating to [Our Village Gardens](https://givebutter.com/our-village-gardens-dxyqwa), a cause that I care deeply about and is located just a few blocks from my home. 
+1. **Time** — at least `INTERVAL` seconds have passed since the last break
+   (default 30 minutes).
+2. **Task complexity** — your prompt looks substantial (matches keywords like
+   `implement`, `refactor`, `build`, `migrate`, `feature`) rather than trivial
+   (`quick`, `simple`, `just`, `explain`, a one-line fix).
 
+When both pass, the hook fires a desktop notification and injects a
+`[stretch-break]` signal into Claude's context naming the chosen exercise. A
+`## Movement Breaks` instruction in your `~/.claude/CLAUDE.md` tells Claude to
+render the card for that exercise before any tool calls, then begin work.
 
-## What it does
+### Carry-over
 
-- Shows a break card (stretch, breathing exercise, water walk, or micro-walk) **before any task estimated to take 3+ minutes**
-- Picks an appropriate exercise based on estimated task duration
-- Sends a **macOS notification every 45 minutes** as a background reminder, regardless of task length
-- Self-installing — configures your `CLAUDE.md` and hook on first use
+If the interval has elapsed but your current task is *trivial*, the hook stays
+silent and **does not reset its timer**. The break carries over to the next
+substantial task instead of being spent on a one-liner. Breaks stay paced to your
+real work, not to the clock alone.
 
-## Exercises
+### The break card
 
-22 exercises across three tiers, themed around reversing the effects of sitting:
+```
+⬛🟧🟧🟧🟧⬛
+⬜⬜⬜⬜⬜⬜
+🟧⬛🟧🟧⬛🟧   Claude's on it!
+🟧🟧🟧🟧🟧🟧   Go do this while I work:
+⬛🟧⬛⬛🟧⬛
+┌─────────────────────────────────────────┐
+│  🏃 Box Breathing                        │
+│─────────────────────────────────────────│
+│  Inhale 4s, hold 4s, exhale 4s, hold 4s.│
+│                                         │
+│  ✦ Why it helps: lowers cortisol        │
+└─────────────────────────────────────────┘
+  Come back when you're done — I'll be here!
+```
 
-- **Quick (3–5 min):** Neck Rolls, Wrist Reset, Eye Rest, Shoulder Shrugs, Glute Squeeze, Ankle Circles, Palming
-- **Medium (5–10 min):** Shoulder Rolls, Chest Opener, Seated Spinal Twist, Box Breathing, Standing Quad Stretch, Hip Circles, Desk Push-ups, Near-Far Focus, Wall Calf Raises
-- **Long (10+ min):** Water Walk, Micro-Walk, Hip Flexor Stretch, Full Desk Reset, Standing Figure-Four, Modified Sun Salutation
+## Install
 
-## Installation
+```bash
+git clone <your-repo-url> ~/.claude/skills/stretch-break
+bash ~/.claude/skills/stretch-break/scripts/setup.sh
+```
 
-1. Drag `stretch-break.skill` into Claude Code
-2. Start a new session
-3. Give Claude any substantial task — the skill will fire automatically and run first-time setup
+Then **restart your Claude Code session** so the updated `settings.json` loads.
 
-First-time setup adds:
-- A `~/.claude/CLAUDE.md` instruction so the skill triggers reliably
-- A `UserPromptSubmit` hook that fires a macOS notification every 45 minutes
+`setup.sh` is idempotent — it's safe to run again any time to repair or upgrade
+your config. It never duplicates the hook or the CLAUDE.md block.
 
-## Requirements
+## What setup changes on your system
 
-- Claude Code
-- macOS (for background notifications via `osascript`)
-- Python 3 (for first-time setup)
+`setup.sh` makes exactly two edits and creates one marker:
+
+- Appends a `## Movement Breaks` section to `~/.claude/CLAUDE.md`.
+- Registers a `UserPromptSubmit` hook in `~/.claude/settings.json` pointing at
+  `scripts/remind.sh`.
+- Touches `~/.claude/skills/stretch-break/.setup-done` (first-run marker).
+
+Both edits converge to a fixed known state, so re-running repairs config rather
+than stacking duplicates. Unrelated hooks and CLAUDE.md sections are left untouched.
+
+## Configuration
+
+All tuning lives at the top of `scripts/remind.sh`:
+
+```bash
+INTERVAL=1800   # seconds between breaks. 1800 = 30 min, 1500 = 25 min, 2700 = 45 min.
+
+SUBSTANTIAL='implement|refactor|\bbuild\b|migrat|...'   # prompts that earn a break
+TRIVIAL='\bquick\b|\bsimple\b|\bjust\b|...'             # prompts that don't (wins ties)
+```
+
+Edit the keyword lists to fit how you phrase tasks. `TRIVIAL` always overrides
+`SUBSTANTIAL`.
+
+## Uninstall
+
+```bash
+bash ~/.claude/skills/stretch-break/scripts/uninstall.sh
+```
+
+This surgically removes only stretch-break's own additions — the `## Movement
+Breaks` block and the `UserPromptSubmit` hook — and clears the runtime markers.
+Your other hooks and CLAUDE.md content are preserved. It leaves the skill files
+in place and prints the command to delete those too if you want a full removal.
+Restart your session afterward.
+
+## Limitations & caveats
+
+- **Context injection is Claude Code version-sensitive.** The desktop
+  notification fires reliably, but whether Claude actually *sees* the
+  `[stretch-break]` signal and shows the card depends on your version honoring
+  `additionalContext` output from `UserPromptSubmit` hooks. Smoke-test after
+  install: work past the interval on a substantial task and confirm a card
+  appears. If only the notification fires, your version isn't injecting the
+  context.
+- **Complexity screening is keyword-based, not semantic.** A substantial task
+  phrased without a recognized keyword (e.g. "ok, go ahead and do it") is
+  screened out and carries over to the next explicitly-worded task. Widen the
+  `SUBSTANTIAL` list if you hit this often.
+- **Notifications are macOS / Linux only.** macOS uses `osascript`, Linux uses
+  `notify-send` (if installed). Other platforms skip the notification silently;
+  the in-chat card still works.
+
+## Repo layout
+
+```
+.
+├── SKILL.md              # how Claude renders the card on a [stretch-break] signal
+├── scripts/
+│   ├── setup.sh          # idempotent installer (CLAUDE.md block + hook)
+│   ├── remind.sh         # the UserPromptSubmit hook: timing + complexity + signal
+│   └── uninstall.sh      # surgical reversal of setup
+└── .gitignore            # ignores runtime state (.setup-done, .last-reminded)
+```
