@@ -51,19 +51,34 @@ real work, not to the clock alone.
 
 ## Install
 
+**Install once, globally — it applies to every project.** Everything lives under
+`~/.claude/` (your user-level Claude Code home), so you do *not* add this to
+individual repos and there's nothing to repeat per project.
+
 ```bash
+# 1. Clone this skill into Claude Code's global skills directory
 git clone <your-repo-url> ~/.claude/skills/stretch-break
+
+# 2. Run the installer (edits your global ~/.claude config)
 bash ~/.claude/skills/stretch-break/scripts/setup.sh
 ```
 
 Then **restart your Claude Code session** so the updated `settings.json` loads.
+That's it — breaks now trigger in every project on this machine.
 
-`setup.sh` is idempotent — it's safe to run again any time to repair or upgrade
-your config. It never duplicates the hook or the CLAUDE.md block.
+> **Two different locations, don't confuse them:** `<your-repo-url>` is *this
+> skill's own Git repo* (where you push changes). `~/.claude/skills/stretch-break`
+> is Claude Code's global skills folder — **not** one of your code projects.
+> Installing just places a copy of the skill where Claude Code looks for it
+> globally; it has nothing to do with whatever repo you happen to be working in.
+
+`setup.sh` is idempotent — safe to run again any time to repair or upgrade your
+config. It never duplicates the hook or the CLAUDE.md block.
 
 ## What setup changes on your system
 
-`setup.sh` makes exactly two edits and creates one marker:
+`setup.sh` makes exactly two edits and creates one marker — all in your
+**global** `~/.claude/` directory, none of it inside any project:
 
 - Appends a `## Movement Breaks` section to `~/.claude/CLAUDE.md`.
 - Registers a `UserPromptSubmit` hook in `~/.claude/settings.json` pointing at
